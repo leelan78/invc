@@ -49,6 +49,7 @@ button,select,input,textarea{font:inherit}
 .ed{outline:none;border-radius:3px;padding:0 2px;margin:0 -2px}.ed:hover{background:rgba(255,214,0,.28)}.ed:focus{background:#fff6bf;box-shadow:0 0 0 1px #e0b400}
 .del{position:absolute;right:-26px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:#fee4e2;color:#b42318;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:13px}
 tr:hover .del,.r4:hover .del{display:flex}
+.items td:last-child,.t4 .r4>.r:last-child{position:relative}.del:hover{background:#b42318;color:#fff}
 .addrow{margin-top:8px;display:flex;gap:8px;align-items:center;text-align:left}.addrow button,.addrow select{border:1px dashed #98a2b3;background:#f8f9fb;color:#344054;border-radius:6px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:11px;max-width:240px}
 
 /* 01 Corporate Classic */
@@ -80,14 +81,22 @@ tr:hover .del,.r4:hover .del{display:flex}
 .t4 .mid{display:grid;grid-template-columns:1fr 280px;gap:18px;margin-top:18px;align-items:start}.t4 .paybox{border:2px solid #000;box-shadow:5px 5px 0 #2438ff;padding:10px}.t4 .summary{width:auto}.t4 .grand{background:#2438ff;color:#fff;padding:8px 10px;border:0}
 .t4 .tn{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}.t4 .signs{display:flex;gap:30px;margin-bottom:20px}.t4 .signs>div{flex:1}.t4 .sline{border-bottom:3px solid #000;height:36px}.t4 .footer{border-top:3px solid #000}
 
-.nbx{grid-column:1/-1;display:flex;gap:6px;position:relative}.nbx>*{flex:1;min-width:0}.nbx input{padding:6px 8px;border:1px solid #ccd2dc;border-radius:6px;background:#fff}
+.nbx{grid-column:1/-1;display:flex;gap:6px;position:relative}.nbx>*{flex:1;min-width:0}.nbx input,.nbx select{padding:6px 8px;border:1px solid #ccd2dc;border-radius:6px;background:#fff}
 #qRes{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid #ccd2dc;border-radius:8px;box-shadow:0 8px 24px rgba(16,24,40,.18);max-height:300px;overflow:auto;z-index:40;display:none}#qRes.on{display:block}
 .qr{padding:8px 10px;border-bottom:1px solid #eef0f4;cursor:pointer;font-size:12px}.qr:hover{background:#f5f9ff}.qr b{display:block}.qr span{color:#667085}
 #sug{position:fixed;z-index:60;background:#fff;border:1px solid #98a2b3;border-radius:8px;box-shadow:0 10px 28px rgba(16,24,40,.22);max-height:260px;overflow:auto;min-width:270px;display:none}#sug.on{display:block}
 .sg{padding:7px 10px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #f0f2f6;color:#172033;font-family:Inter,"Segoe UI",Arial,sans-serif}.sg.hi,.sg:hover{background:#e8f0fe}.sg small{color:#667085;white-space:nowrap}
 .ed:empty:before{content:attr(data-ph);color:#98a2b3}.ed[data-k]{white-space:pre-line;display:inline-block;min-width:34px}
 @media print{.ed:empty:before{content:''}}
-body[data-role="sales"] .adm{display:none!important}.ed[contenteditable="false"]:hover{background:none}
+body[data-role="sales"] .adm,body[data-role="sales"] .sbody,body[data-role="sales"] .nb,body[data-role="sales"] #navToggle{display:none!important}
+body[data-role="sales"] .layout{display:block}
+body[data-role="sales"] .sidebar{display:flex;flex-wrap:wrap;align-items:center;height:auto;overflow:visible;position:sticky;top:0;z-index:30;background:#101828;border:0}
+body[data-role="sales"] .shead{position:static;flex:none}
+body[data-role="sales"] .tabs{position:static;display:flex;flex:1;flex-wrap:wrap;gap:8px;background:transparent;border:0;padding:8px 10px}
+body[data-role="sales"] .nbx{grid-column:auto;flex:1 1 260px}
+.pr{display:none}body[data-role="sales"] .pr{display:inline-block}
+.pd{font:inherit;color:inherit;border:0;background:transparent;padding:0;margin:0;max-width:150px;cursor:pointer}.pd:hover{background:#eef4ff}
+@media print{.pd::-webkit-calendar-picker-indicator{display:none}.pd{appearance:none;-webkit-appearance:none}}.ed[contenteditable="false"]:hover{background:none}
 #gate{position:fixed;inset:0;z-index:100;background:#101828;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}#gate.off{display:none}#gate .bx{max-width:360px}#gate h2{margin:0 0 10px}#gate p{color:#cbd5e1;font-size:14px;line-height:1.55;margin:0 0 16px}
 @media print{#gate{display:none!important}}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.shead,.tabs{position:static}}
@@ -105,7 +114,8 @@ body[data-role="sales"] .adm{display:none!important}.ed[contenteditable="false"]
   <button class="nb" data-tab="lines">Invoice items</button>
   <button class="nb" data-tab="customers">Customers</button>
   <button class="nb" data-tab="invoices">Saved invoices</button>
-  <div class="nbx"><button class="btn sm" id="newInv">+ New invoice</button><button class="btn sm" id="saveInv">Save invoice</button><button class="btn alt sm" id="authBtn">Sign in with Google</button></div>
+  <button class="nb" data-tab="activity">Live activity</button>
+  <div class="nbx"><button class="btn sm" id="newInv">+ New invoice</button><button class="btn sm" id="saveInv" title="Ctrl + S">Save invoice</button><select id="tplTop" class="pr" title="Invoice template"></select><button class="btn alt sm pr" onclick="window.print()">Print</button><button class="btn alt sm" id="authBtn">Sign in with Google</button></div>
   <div class="nbx"><input type="date" id="qDate" title="Find invoices by date"><input id="qText" placeholder="Invoice no. / customer" autocomplete="off"><button class="btn alt sm" id="qClr" style="flex:none" title="Clear search">✕</button><div id="qRes"></div></div>
  </nav>
  <div class="sbody">
@@ -129,6 +139,9 @@ body[data-role="sales"] .adm{display:none!important}.ed[contenteditable="false"]
   <h3>Terms &amp; notes · <span id="tnName"></span></h3>
   <label>Terms</label><textarea id="tnTerms"></textarea>
   <label>Notes</label><textarea id="tnNotes"></textarea>
+  <h3>Sales point settings</h3>
+  <button class="btn" id="pubSet">Publish settings now</button>
+  <p class="hint">Company details, logo, payment details, terms and notes are shared with sales users automatically a moment after you change them. This button sends them immediately and also sets the default template for new sales devices.</p>
   <button class="btn alt" style="margin-top:14px" onclick="resetDemo()">Reset invoice data</button>
   </div>
  </section>
@@ -181,6 +194,13 @@ body[data-role="sales"] .adm{display:none!important}.ed[contenteditable="false"]
  <section class="pane" data-pane="invoices">
   <h3 style="margin-top:12px">Saved invoices · <span id="iCount">0</span></h3>
   <div id="invList"></div>
+ </section>
+
+ <!-- LIVE ACTIVITY (admin) -->
+ <section class="pane" data-pane="activity">
+  <h3 style="margin-top:12px">Live activity · other users</h3>
+  <p class="hint">Sign-ins, saved invoices, new customers and new inventory items appear here as they happen.</p>
+  <div id="actList"></div>
  </section>
  </div>
 </aside>
@@ -312,7 +332,7 @@ $('#items').addEventListener('click',e=>{
 function addItem(){items().push({code:'',desc:'',qty:1,unit:'pcs',price:0,disc:0,tax:15});openLine=items().length-1;buildItems();render()}
 $('#blankBtn').onclick=addItem;
 function syncControls(){
- const t=curT();
+ const t=curT();const tt=$('#tplTop');if(tt)tt.value=t;
  $('#method').value=d.method;$('#payText').value=d.payTexts[d.method];
  $('#tnName').textContent=NAMES[t];$('#tnTerms').value=d.tn[t].terms;$('#tnNotes').value=d.tn[t].notes;
  $('#cards').innerHTML=TPLS.map(k=>`<div class="card ${k==t?'on':''}" data-t="${k}">${NAMES[k]}<i style="background:${COL[k]}"></i></div>`).join('');
@@ -333,10 +353,14 @@ function calc(){
  const s=k=>L.reduce((a,b)=>a+b[k],0),grand=s('net')+s('tx')+(+d.shipc||0),paid=+d.paid||0;
  return{L,sub:s('g'),ds:s('ds'),tx:s('tx'),grand,paid,bal:grand-paid};
 }
+const dtIn=k=>`<input type="date" class="pd" data-k="${k}" value="${esc(d[k]||'')}">`;
+const dEd=()=>`<span class="ed" contenteditable="true" spellcheck="false" data-k="discp" data-ph="0">${+d.discp||''}</span>`;
+const isoD=x=>new Date(x.getTime()-x.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+function dueFromTerms(){const n=parseInt(d.terms);if(!isNaN(n)&&d.date){const x=new Date(d.date+'T00:00:00');x.setDate(x.getDate()+n);d.due=isoD(x)}}
 const fd=s=>{const x=new Date(s+'T00:00:00');return isNaN(x)?esc(s):x.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})};
 
 /* ---------- shared invoice pieces ---------- */
-const ed=(i,f,v)=>`<span class="ed" contenteditable="${f=='price'&&window.ROLE==='sales'?'false':'true'}" spellcheck="false" data-i="${i}" data-f="${f}" data-ph="${f=='desc'?'Type item name…':''}">${esc(v)}</span>`;
+const ed=(i,f,v)=>`<span class="ed" contenteditable="${f=='price'&&window.ROLE==='sales'&&findByName((items()[i]||{}).desc||'')?'false':'true'}" spellcheck="false" data-i="${i}" data-f="${f}" data-ph="${f=='desc'?'Type item name…':''}">${esc(v)}</span>`;
 const esr=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const edk=(k,ph)=>`<span class="ed" contenteditable="true" spellcheck="false" data-k="${k}" data-ph="${ph}">${esr(d[k])}</span>`;
 const del=i=>`<span class="np del" data-del="${i}" title="Remove item">×</span>`;
@@ -345,16 +369,16 @@ function brand(){
  const ini=d.co.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'IN';
  return `<div class="company"><div class="logo">${d.logo?`<img src="${d.logo}">`:esc(ini)}</div><div><div class="company-name">${esc(d.co)}</div><div class="company-meta">${esc(d.addr)}<br>${esc(d.phone)} • ${esc(d.email)}<br>Tax/VAT ID: ${esc(d.tax)}${d.reg?` • Reg. No. ${esc(d.reg)}`:''}</div></div></div>`;
 }
-const metaGrid=()=>`<div class="meta-grid"><div class="meta-box"><label>Invoice No.</label><b>${esc(d.inv)}</b></div><div class="meta-box"><label>Sales Order</label><b>${esc(d.so)}</b></div><div class="meta-box"><label>Invoice Date</label><b>${fd(d.date)}</b></div><div class="meta-box"><label>Due Date</label><b>${fd(d.due)}</b></div></div>`;
+const metaGrid=()=>`<div class="meta-grid"><div class="meta-box"><label>Invoice No.</label><b>${esc(d.inv)}</b></div><div class="meta-box"><label>Sales Order</label><b>${esc(d.so)}</b></div><div class="meta-box"><label>Invoice Date</label><b>${dtIn('date')}</b></div><div class="meta-box"><label>Due Date</label><b>${dtIn('due')}</b></div></div>`;
 const billText=()=>`<b>${edk('cust','Type customer name…')}</b><div class="small muted">${edk('ccontact','Contact person')}<br>${edk('caddr','Bill-to address')}<br>${edk('cphone','Phone')}<br>${edk('cemail','Email')}<br>Tax ID: ${edk('ctax','Tax ID')}</div>`;
 const shipText=()=>`<div class="small muted">${edk('shipTo','Ship-to details')}</div>`;
-const billGrid=()=>`<div class="bill-grid"><div><div class="st">Bill To</div>${billText()}</div><div><div class="st">Ship To</div>${shipText()}<br><div class="st">Payment Terms</div><div class="small">${esc(d.terms)} • Currency: ${esc(d.cur)}</div></div></div>`;
+const billGrid=()=>`<div class="bill-grid"><div><div class="st">Bill To</div>${billText()}</div><div><div class="st">Ship To</div>${shipText()}<br><div class="st">Payment Terms</div><div class="small">${edk('terms','e.g. 30 Days')} • Currency: ${esc(d.cur)}</div></div></div>`;
 function tbl(c){
  return `<table class="items"><thead><tr><th>Code</th><th>Description</th><th class="num">Qty</th><th>Unit</th><th class="num">Unit Price</th><th class="num">Disc %</th><th class="num">Tax %</th><th class="num">Amount</th></tr></thead><tbody>${c.L.map((i,n)=>`<tr><td><b>${ed(n,'code',i.code)}</b></td><td>${ed(n,'desc',i.desc)}</td><td class="num">${ed(n,'qty',i.qty)}</td><td>${ed(n,'unit',i.unit)}</td><td class="num">${ed(n,'price',m(i.price))}</td><td class="num">${ed(n,'disc',i.disc)}</td><td class="num">${ed(n,'tax',i.tax)}</td><td class="num">${m(i.tot)}${del(n)}</td></tr>`).join('')}</tbody></table>${addBtn()}`;
 }
 function summary(c){
  const q=d.cur,r=(l,v,x='')=>`<div class="sr ${x}"><span>${l}</span><b>${q} ${m(v)}</b></div>`;
- return `<div class="summary">${r('Subtotal',c.sub)}${r('Discount'+(+d.discp?` (extra ${+d.discp}%)`:''),-c.ds).replace('-','− ')}${r('VAT / Tax',c.tx)}${r('Delivery',d.shipc)}${r('TOTAL',c.grand,'grand')}${r('Paid',c.paid)}${r('Balance Due',c.bal)}</div>`;
+ return `<div class="summary">${r('Subtotal',c.sub)}<div class="sr"><span>Discount ${dEd()}%</span><b>${c.ds?'− ':''}${q} ${m(c.ds)}</b></div>${r('VAT / Tax',c.tx)}${r('Delivery',d.shipc)}${r('TOTAL',c.grand,'grand')}${r('Paid',c.paid)}${r('Balance Due',c.bal)}</div>`;
 }
 function wordsLine(c){const g=Math.max(0,c.grand),w=Math.floor(g),ct=Math.round((g-w)*100),W=words(w);return `<p class="words">Amount in words: ${W.charAt(0).toUpperCase()+W.slice(1)} ${esc(d.cur)}${ct?` and ${ct}/100`:''} only.</p>`}
 const payBlock=()=>`<div class="st">Payment Method</div><div class="small"><b>${MLAB[d.method]}</b><br>${esc(d.payTexts[d.method])}</div>`;
@@ -368,17 +392,17 @@ const T={
 t1:c=>`<div class="ih">${brand()}<div class="it"><h1>INVOICE</h1><p>Original Tax Invoice</p><b>${esc(d.inv)}</b></div></div>${metaGrid()}${billGrid()}<div style="margin-top:24px">${tbl(c)}</div><div style="margin-top:16px">${summary(c)}</div>${wordsLine(c)}
  <div class="pn"><div>${payBlock()}${sig('Authorised Signature')}</div><div>${tnBlock('Terms &amp; Conditions','Notes')}<div class="sig-end"><div class="rline"><span>Name:</span></div><div class="rline"><span>Signature:</span></div><div class="cap">Receiver's Name / Signature</div></div></div></div>${foot()}`,
 t2:c=>`${brand()}<div class="banner"><h1>INVOICE</h1><b>${esc(d.inv)}</b></div>
- <div class="ml4"><div><span class="ml">Invoice date</span><b>${fd(d.date)}</b></div><div><span class="ml">Due date</span><b>${fd(d.due)}</b></div><div><span class="ml">Sales order</span><b>${esc(d.so)}</b></div><div><span class="ml">Terms</span><b>${esc(d.terms)}</b></div></div>
+ <div class="ml4"><div><span class="ml">Invoice date</span><b>${dtIn('date')}</b></div><div><span class="ml">Due date</span><b>${dtIn('due')}</b></div><div><span class="ml">Sales order</span><b>${esc(d.so)}</b></div><div><span class="ml">Terms</span><b>${edk('terms','e.g. 30 Days')}</b></div></div>
  <div class="parties"><div><div class="st">Billed to</div>${billText()}</div><div><div class="st">Delivered to</div>${shipText()}</div></div>${tbl(c)}
- <div class="strip"><div><span class="ml">Subtotal</span><b>${m(c.sub)}</b></div><div><span class="ml">Discount</span><b>${m(c.ds)}</b></div><div><span class="ml">Tax</span><b>${m(c.tx)}</b></div><div><span class="ml">Delivery</span><b>${m(d.shipc)}</b></div><div class="gt"><span class="ml">Total ${esc(d.cur)}</span><b>${m(c.grand)}</b></div></div>
+ <div class="strip"><div><span class="ml">Subtotal</span><b>${m(c.sub)}</b></div><div><span class="ml">Discount ${dEd()}%</span><b>${m(c.ds)}</b></div><div><span class="ml">Tax</span><b>${m(c.tx)}</b></div><div><span class="ml">Delivery</span><b>${m(d.shipc)}</b></div><div class="gt"><span class="ml">Total ${esc(d.cur)}</span><b>${m(c.grand)}</b></div></div>
  <p class="small" style="margin:10px 0 0">Paid ${esc(d.cur)} ${m(c.paid)} &nbsp;•&nbsp; <b>Balance due ${esc(d.cur)} ${m(c.bal)}</b></p>${wordsLine(c)}
  <div class="trio"><div>${payBlock()}</div><div><div class="st">Terms of sale</div><div class="small muted">${esc(tnOf().terms)}</div></div><div><div class="st">Remarks</div><div class="small muted">${esc(tnOf().notes)}</div></div></div>
  <div class="signs"><div><div class="sline"></div><div class="cap">Prepared by</div></div><div><div class="sline"></div><div class="cap">Approved by</div></div></div>${foot()}`,
-t3:c=>`<div class="hero">${brand()}<div style="text-align:right"><div style="font-size:10px;opacity:.8">INVOICE</div><h1>${esc(d.inv)}</h1><div style="font-size:10px">Issued ${fd(d.date)}</div></div></div>${metaGrid()}${billGrid()}<div style="margin-top:24px">${tbl(c)}</div><div style="margin-top:16px">${summary(c)}</div>${wordsLine(c)}
+t3:c=>`<div class="hero">${brand()}<div style="text-align:right"><div style="font-size:10px;opacity:.8">INVOICE</div><h1>${esc(d.inv)}</h1><div style="font-size:10px">Issued ${dtIn('date')}</div></div></div>${metaGrid()}${billGrid()}<div style="margin-top:24px">${tbl(c)}</div><div style="margin-top:16px">${summary(c)}</div>${wordsLine(c)}
  <div class="pn"><div>${payBlock()}${sig('Authorised Signature')}</div><div>${tnBlock('Conditions of Sale','A note from us')}${sig('Customer Acknowledgement')}</div></div>${foot()}`,
 t4:c=>`<div class="rail"><span>INVOICE ${esc(d.inv)}</span></div><div class="main">${brand()}
- <div class="due"><div><small>Balance due by ${fd(d.due)}</small><div class="amt">${esc(d.cur)} ${m(c.bal)}</div></div><div style="text-align:right"><small>Invoice total</small><b>${esc(d.cur)} ${m(c.grand)}</b></div></div>
- <div class="tri"><div><div class="st">Billed to</div>${billText()}</div><div><div class="st">Shipped to</div>${shipText()}</div><div><div class="st">Reference</div><div class="small">Order ${esc(d.so)}<br>Issued ${fd(d.date)}<br>Terms ${esc(d.terms)}</div></div></div>
+ <div class="due"><div><small>Balance due by ${dtIn('due')}</small><div class="amt">${esc(d.cur)} ${m(c.bal)}</div></div><div style="text-align:right"><small>Invoice total</small><b>${esc(d.cur)} ${m(c.grand)}</b></div></div>
+ <div class="tri"><div><div class="st">Billed to</div>${billText()}</div><div><div class="st">Shipped to</div>${shipText()}</div><div><div class="st">Reference</div><div class="small">Order ${esc(d.so)}<br>Issued ${dtIn('date')}<br>Terms ${edk('terms','e.g. 30 Days')}</div></div></div>
  <div class="rh"><span>QTY</span><span>ITEM</span><span class="r">PRICE</span><span class="r">AMOUNT</span></div>
  ${c.L.map((i,n)=>`<div class="r4"><div class="q">${ed(n,'qty',i.qty)}</div><div><div>${ed(n,'desc',i.desc)}</div><div class="sub">${ed(n,'code',i.code)} / ${ed(n,'unit',i.unit)} / disc ${ed(n,'disc',i.disc)}% / tax ${ed(n,'tax',i.tax)}%</div></div><div class="r">${ed(n,'price',m(i.price))}</div><div class="r">${m(i.tot)}${del(n)}</div></div>`).join('')}${addBtn()}
  <div class="mid"><div class="paybox">${payBlock()}</div>${summary(c)}</div>${wordsLine(c)}
@@ -387,8 +411,13 @@ t4:c=>`<div class="rail"><span>INVOICE ${esc(d.inv)}</span></div><div class="mai
 };
 
 /* ---------- render, paper, navigation ---------- */
-function render(){try{localStorage.setItem('invoiceData',JSON.stringify(d))}catch(e){}const t=curT();$('#paper-sheet').innerHTML=`<div class="invoice ${t}">${T[t](calc())}</div>`;fit()}
-function change(){try{localStorage.setItem('invoiceTemplate',curT())}catch(e){}openLine=-1;syncControls();buildItems();render()}
+function render(){try{localStorage.setItem('invoiceData',JSON.stringify(d))}catch(e){}const t=curT();$('#paper-sheet').innerHTML=`<div class="invoice ${t}">${T[t](calc())}</div>`;fit();window.schedPub&&window.schedPub()}
+function change(skipNo){
+ const nt=curT();
+ if(d.curT&&d.curT!==nt){stashDraft(d.curT);d.curT=nt;loadDraft(nt)}
+ try{localStorage.setItem('invoiceTemplate',nt)}catch(e){}
+ openLine=-1;syncControls();buildForm();buildItems();render();
+ if(skipNo!==true&&!d.invAuto)assignNo()}
 function fit(){const s=$('#paper-sheet'),L=$('#paper').value=='Letter',w=document.querySelector('.preview').clientWidth-48;s.style.setProperty('--z',Math.max(.3,Math.min(1,w/(L?816:794))))}
 function paper(){const L=$('#paper').value=='Letter',s=$('#paper-sheet');s.style.setProperty('--w',L?'215.9mm':'210mm');s.style.setProperty('--h',L?'279.4mm':'297mm');
  let st=$('#pg');if(!st){st=document.createElement('style');st.id='pg';document.head.appendChild(st)}st.textContent=`@page{size:${L?'letter':'A4'};margin:0}`;fit()}
@@ -397,27 +426,29 @@ function showTab(t){document.querySelectorAll('.pane').forEach(p=>p.classList.to
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 $('#navToggle').onclick=()=>setPanel(false);
 $('#reopen').onclick=()=>setPanel(true);
-function resetDemo(){d=freshData();openLine=-1;buildForm();buildItems();syncControls();render()}
+function resetDemo(){d=freshData();d.curT=curT();openLine=-1;buildForm();buildItems();syncControls();render()}
 
 /* editing directly on the invoice page */
 const sheet=$('#paper-sheet');
 sheet.addEventListener('focusout',e=>{
  const k=e.target.closest&&e.target.closest('[data-k]');
- if(k){const v=k.innerText.replace(/\u00a0/g,' ').replace(/\n+$/,'');if(d[k.dataset.k]!==v){d[k.dataset.k]=v;buildForm();render()}return}
+ if(k&&k.tagName==='INPUT')return;
+ if(k){let v=k.innerText.replace(/\u00a0/g,' ').replace(/\n+$/,'');const kk=k.dataset.k;if(kk==='discp')v=Math.min(100,Math.max(0,parseFloat(v.replace(/[^0-9.]/g,''))||0));if(d[kk]!==v){d[kk]=v;if(kk==='terms')dueFromTerms();buildForm();render()}return}
  const t=e.target.closest&&e.target.closest('[data-f]');if(!t)return;
  const i=+t.dataset.i,f=t.dataset.f,it=items()[i];if(!it)return;
  const nx=e.relatedTarget&&e.relatedTarget.dataset&&e.relatedTarget.dataset.f?{i:e.relatedTarget.dataset.i,f:e.relatedTarget.dataset.f}:null;
  const raw=t.textContent.trim(),v=NUM.includes(f)?cl(f,parseFloat(raw.replace(/[^0-9.\-]/g,''))||0):raw;
  if(it[f]===v)return;
- it[f]=v;if(f==='desc')pick(it);buildItems();render();
+ it[f]=v;if(f==='desc')pick(it);buildItems();render();if(f==='desc'||f==='price')checkNewItem(i);
  if(nx){const el=sheet.querySelector(`[data-i="${nx.i}"][data-f="${nx.f}"]`);if(el)el.focus()}
 });
+sheet.addEventListener('change',e=>{const t=e.target;if(!(t.matches&&t.matches('input.pd')))return;d[t.dataset.k]=t.value;if(t.dataset.k==='date')dueFromTerms();buildForm();render()});
 sheet.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t.matches&&t.matches('[data-f],[data-k]')&&!['caddr','shipTo'].includes(t.dataset.k)){e.preventDefault();t.blur()}});
 sheet.addEventListener('click',e=>{
  if(e.target.closest('[data-add]')){addItem();const el=sheet.querySelector(`[data-i="${items().length-1}"][data-f="desc"]`);if(el)el.focus();return}
  const r=e.target.closest('[data-del]');if(r){items().splice(+r.dataset.del,1);openLine=-1;buildItems();render()}
 });
-$('#tpl').onchange=change;$('#paper').onchange=paper;addEventListener('resize',fit);
+$('#tpl').onchange=()=>change();$('#paper').onchange=paper;addEventListener('resize',fit);
 try{const s=localStorage.getItem('invoiceTemplate');if(s&&T[s])$('#tpl').value=s}catch(e){}
 /* ===== customers, saved invoices, invoice numbers, search, pop-up suggestions, cloud ===== */
 const today=()=>{const x=new Date();return new Date(x.getTime()-x.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
@@ -428,8 +459,28 @@ const saveInvs=()=>{try{localStorage.setItem('invoiceList',JSON.stringify(invs))
 function cloud(){return window.FB&&window.FB.user&&window.FB.role?window.FB:null}
 function cset(col,rec){const c=cloud();if(c)c.set(col,rec.id,rec).catch(e=>toast('Cloud save failed: '+e.message))}
 function cdel(col,id){const c=cloud();if(c)c.del(col,id).catch(e=>toast('Cloud delete failed: '+e.message))}
-const seeded={};
+const seeded={};let _settings=null;
+let lastPub='',pubT=null,adminSynced=false;const SETK=['co','addr','phone','email','tax','reg','cur','logo','method','payTexts','tn'];
+const settingsJson=()=>JSON.stringify(SETK.map(k=>d[k]));
+window.schedPub=()=>{if(window.ROLE!=='admin'||!adminSynced)return;clearTimeout(pubT);pubT=setTimeout(pubNow,1200)};
+async function pubNow(){const c=cloud();if(!c||window.ROLE!=='admin')return;const j=settingsJson();if(j===lastPub)return;const s={};SETK.forEach(k=>s[k]=d[k]);if(_settings&&_settings.tpl)s.tpl=_settings.tpl;const prev=lastPub;lastPub=j;try{await c.set('meta','settings',s)}catch(e){lastPub=prev;toast('Could not publish settings: '+e.message+(d.logo&&d.logo.length>700000?' (the logo may be too large)':''))}}
+function applySettings(s,quiet){SETK.forEach(k=>{if(s[k]!==undefined)d[k]=s[k]});
+ try{if(s.tpl&&T[s.tpl]&&!localStorage.getItem('invoiceTemplate'))$('#tpl').value=s.tpl}catch(e){}
+ if(!quiet)change(true)}
+$('#pubSet').onclick=async()=>{
+ const c=cloud();if(!c||window.ROLE!=='admin')return toast('Sign in as admin first');
+ const s={tpl:curT()};['co','addr','phone','email','tax','reg','cur','logo','method','payTexts','tn'].forEach(k=>s[k]=d[k]);
+ lastPub=settingsJson();if(_settings)_settings.tpl=s.tpl;
+ try{await c.set('meta','settings',s);toast('Settings published to sales users')}catch(e){toast('Could not publish: '+e.message+(d.logo&&d.logo.length>700000?' (the logo may be too large)':''))}};
 window.onCloud=(col,docs)=>{
+ if(col==='activity'){renderAct(docs);return}
+ if(col==='settings'){
+  _settings=docs[0]||null;const cj=_settings?JSON.stringify(SETK.map(k=>_settings[k])):null;
+  if(window.ROLE==='admin'){
+   if(!adminSynced){adminSynced=true;if(_settings){applySettings(_settings);lastPub=cj}}
+   else if(cj&&cj!==lastPub&&cj!==settingsJson()){applySettings(_settings);lastPub=cj}
+  }else if(_settings){let first=false;try{first=!localStorage.getItem('invoiceTemplate')}catch(e){}if(cj!==settingsJson()||first)applySettings(_settings)}
+  return}
  const M={invoice_catalog:[()=>cat,v=>{cat=v;saveCat();renderCat();render()}],invoice_customers:[()=>custs,v=>{custs=v;saveCusts();renderCusts()}],invoices:[()=>invs,v=>{invs=v;saveInvs();renderInvs();runSearch()}]};
  const[g,s]=M[col];
  if(!docs.length&&g().length&&!seeded[col]&&window.ROLE==='admin'){seeded[col]=1;g().forEach(r=>cset(col,r));return}
@@ -439,7 +490,7 @@ window.onAuthChange=(u,role)=>{
  window.ROLE=role||null;document.body.dataset.role=role||'';
  $('#authBtn').textContent=u?'Sign out ('+((u.displayName||u.email||'').split(' ')[0])+')':'Sign in with Google';
  const g=$('#gate'),msg=$('#gateMsg'),b=$('#gateBtn');
- if(u&&role){g.classList.add('off');buildForm();buildItems();render();if(!d.invAuto)assignNo();toast('Signed in as '+(role==='admin'?'administrator':'sales point'))}
+ if(u&&role){if(role==='sales')logAct('signed in');g.classList.add('off');buildForm();buildItems();render();if(!d.invAuto)assignNo();toast('Signed in as '+(role==='admin'?'administrator':'sales point'))}
  else{g.classList.remove('off');
   if(u){msg.textContent=(u.email||'This account')+' has not been given access. Please contact the administrator.';b.textContent='Sign out'}
   else{msg.textContent='Sign in with your authorised Google account to continue.';b.textContent='Sign in with Google'}}};
@@ -448,17 +499,52 @@ $('#authBtn').onclick=()=>{
  if(!window.FB)return toast('Firebase did not load. Open this page over http(s) with internet access.');
  if(window.FB.user)window.FB.signOut();else window.FB.signIn().catch(e=>toast('Sign-in failed: '+e.message))};
 
+
+
+/* ===== every template is its own independent invoice (customer, dates, terms, discount, number, items) ===== */
+const PF=['inv','invAuto','so','date','due','terms','discp','paid','shipc','cust','ccontact','caddr','cphone','cemail','ctax','shipTo'];
+function blankDraft(){const x=new Date();x.setDate(x.getDate()+(parseInt(d.terms)||30));return{inv:'',invAuto:false,so:'',date:today(),due:isoD(x),terms:d.terms,discp:0,paid:0,shipc:0,cust:'',ccontact:'',caddr:'',cphone:'',cemail:'',ctax:'',shipTo:''}}
+function stashDraft(t){d.draft=d.draft||{};const o={};PF.forEach(k=>o[k]=d[k]);d.draft[t]=o}
+function loadDraft(t){const b=blankDraft(),o=(d.draft&&d.draft[t])||b;PF.forEach(k=>d[k]=o[k]!==undefined?o[k]:b[k])}
+
+/* ===== new items: auto code now, added to inventory when the invoice is saved ===== */
+const pendCode=new WeakMap();
+const needsCode=it=>it.desc&&it.desc.trim()&&(+it.price)>0&&!it.code&&!findByName(it.desc);
+async function newCode(name){
+ const pfx=(name.replace(/[^A-Za-z]/g,'').slice(0,3)||'ITM').toUpperCase();let n;const c=cloud();
+ if(c){try{n=await c.nextCode()}catch(e){}}
+ if(!n){let k=1;try{k=(+localStorage.getItem('itemLocalCtr')||0)+1;localStorage.setItem('itemLocalCtr',k)}catch(e){}return pfx+'-L'+String(k).padStart(4,'0')}
+ return pfx+'-'+String(n).padStart(4,'0')}
+async function checkNewItem(i){
+ const it=items()[i];if(!it||pendCode.has(it)||!needsCode(it))return;
+ const pr=newCode(it.desc);pendCode.set(it,pr);try{it.code=await pr}finally{pendCode.delete(it)}
+ buildItems();render()}
+async function syncNewItems(){
+ let n=0;const added=[];
+ for(const t of TPLS)for(const it of (d.itemsBy[t]||[])){
+  if(!it.desc||!it.desc.trim()||!(+it.price>0))continue;
+  const c=findByName(it.desc);
+  if(c){if(!it.code)it.code=c.code;continue}
+  if(pendCode.has(it))await pendCode.get(it).catch(()=>{});
+  if(!it.code)it.code=await newCode(it.desc);
+  const rec={id:uid(),code:it.code,name:it.desc.trim(),unit:it.unit||'pcs',price:+it.price,tax:+it.tax||0};
+  cat.push(rec);cset('invoice_catalog',rec);added.push(rec.name);n++}
+ if(n){saveCat();renderCat();buildItems();render();toast(n+' new item'+(n>1?'s':'')+' added to inventory');logAct(n+' new inventory item'+(n>1?'s':'')+': '+added.join(', '))}}
+$('#items').addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.i!==undefined&&(t.dataset.f==='desc'||t.dataset.f==='price'))checkNewItem(+t.dataset.i)});
+
 /* invoice numbers: shared cloud counter when signed in, device counter otherwise — never repeats */
 async function assignNo(){
- let n;const c=cloud();
+ const tReq=d.curT||curT();let n;const c=cloud();
  if(c){try{n=await c.nextNo()}catch(e){toast('Cloud counter unavailable ('+e.message+'). Using a device number.')}}
  if(!n){let k=1;try{k=(+localStorage.getItem('invLocalCtr')||0)+1;localStorage.setItem('invLocalCtr',k)}catch(e){}n='INV-'+new Date().getFullYear()+'-L'+String(k).padStart(5,'0')}
- d.inv=n;d.invAuto=true;buildForm();render();return n}
+ const t0=tReq;
+ if(d.curT===t0||!d.curT){d.inv=n;d.invAuto=true}else if(d.draft&&d.draft[t0]){d.draft[t0].inv=n;d.draft[t0].invAuto=true}
+ buildForm();render();return n}
 async function newInvoice(){
- if(!confirm('Start a new invoice? Anything not saved on the current one will be cleared.'))return;
+ if(!confirm('Start a new invoice on this template? Anything not saved on it will be cleared.'))return;
  CF.forEach(k=>d[k]='');d.so='';d.paid=0;d.shipc=0;d.discp=0;d.date=today();
  const x=new Date();x.setDate(x.getDate()+(parseInt(d.terms)||30));d.due=new Date(x.getTime()-x.getTimezoneOffset()*6e4).toISOString().slice(0,10);
- TPLS.forEach(t=>d.itemsBy[t]=[]);openLine=-1;
+ d.itemsBy[curT()]=[];openLine=-1;
  await assignNo();buildItems();toast('New invoice '+d.inv)}
 const CF=['cust','ccontact','caddr','cphone','cemail','ctax','shipTo'];
 $('#newInv').onclick=newInvoice;
@@ -466,18 +552,22 @@ $('#newInv').onclick=newInvoice;
 /* save / open invoices */
 async function saveInvoice(){
  if(!d.inv)await assignNo();
- const{logo,...rest}=d;
+ await syncNewItems();
+ const f={};PF.forEach(k=>f[k]=d[k]);const rest={fields:f,items:items()};
  const rec={id:d.inv,inv:d.inv,by:(window.FB&&window.FB.user&&window.FB.user.email)||'',date:d.date,cust:d.cust||'',total:calc().grand,tpl:curT(),data:JSON.stringify(rest),saved:Date.now()};
  invs=invs.filter(x=>x.id!==rec.id);invs.push(rec);saveInvs();renderInvs();autoSaveCustomer();
  const c=cloud();
- if(c){try{await c.set('invoices',rec.id,rec);toast('Invoice '+rec.inv+' saved to the cloud')}catch(e){toast('Saved on this device only: '+e.message)}}
+ if(c){try{await c.set('invoices',rec.id,rec);toast('Invoice '+rec.inv+' saved to the cloud');logAct('saved invoice '+rec.inv+(rec.cust?' for '+rec.cust:'')+' — '+d.cur+' '+m(rec.total))}catch(e){toast('Saved on this device only: '+e.message)}}
  else toast('Invoice '+rec.inv+' saved on this device. Sign in to sync it.')}
 $('#saveInv').onclick=saveInvoice;
 function loadInvoice(id){
  const r=invs.find(x=>x.id===id);if(!r)return;
- try{d=Object.assign(freshData(),JSON.parse(r.data),{logo:d.logo})}catch(e){return toast('Could not open this invoice')}
- if(T[r.tpl])$('#tpl').value=r.tpl;
- buildForm();change();$('#qRes').classList.remove('on');toast('Opened '+r.inv)}
+ let o;try{o=JSON.parse(r.data)}catch(e){return toast('Could not open this invoice')}
+ const t=T[r.tpl]?r.tpl:curT(),f=o.fields||o,its=o.items||(o.itemsBy&&o.itemsBy[t])||[];
+ if(t!==curT()){$('#tpl').value=t;change(true)}
+ PF.forEach(k=>{if(f[k]!==undefined)d[k]=f[k]});d.invAuto=true;d.inv=r.inv;
+ d.itemsBy[t]=its;openLine=-1;syncControls();buildForm();buildItems();render();
+ $('#qRes').classList.remove('on');toast('Opened '+r.inv)}
 const invRow=x=>`<div class="qr" data-open="${esc(x.id)}"><b>${esc(x.inv)} · ${esc(x.cust||'(no customer)')}</b><span>${fd(x.date)} · ${esc(d.cur)} ${m(x.total)}</span></div>`;
 function runSearch(){
  const dt=$('#qDate').value,q=key($('#qText').value),box=$('#qRes');
@@ -492,7 +582,7 @@ function renderInvs(){
 document.addEventListener('click',e=>{
  const o=e.target.closest('[data-open]'),x=e.target.closest('[data-idel]');
  if(o)loadInvoice(o.dataset.open);
- if(x){const r=invs.find(v=>v.id===x.dataset.idel);if(r&&confirm('Delete invoice '+r.inv+'? This cannot be undone.')){invs=invs.filter(v=>v!==r);saveInvs();cdel('invoices',r.id);renderInvs();runSearch()}}
+ if(x){const r=invs.find(v=>v.id===x.dataset.idel);if(r&&confirm('Delete invoice '+r.inv+'? This cannot be undone.')){invs=invs.filter(v=>v!==r);saveInvs();cdel('invoices',r.id);logAct('deleted invoice '+r.inv);renderInvs();runSearch()}}
  if(!e.target.closest('.nbx'))$('#qRes').classList.remove('on')});
 
 /* customers */
@@ -506,8 +596,8 @@ function applyCust(c){Object.assign(d,{cust:c.name,ccontact:c.contact||'',caddr:
 function autoSaveCustomer(){
  const name=(d.cust||'').trim();if(!name)return;
  const rec={name,contact:d.ccontact||'',phone:d.cphone||'',email:d.cemail||'',tax:d.ctax||'',addr:d.caddr||'',ship:d.shipTo||''};
- let c=custs.find(x=>key(x.name)===key(name));if(c)Object.assign(c,rec);else{c={id:uid(),...rec};custs.push(c)}
- saveCusts();cset('invoice_customers',c);renderCusts()}
+ let c=custs.find(x=>key(x.name)===key(name)),fresh=!c;if(c)Object.assign(c,rec);else{c={id:uid(),...rec};custs.push(c)}
+ saveCusts();cset('invoice_customers',c);if(fresh)logAct('added customer '+name);renderCusts()}
 $('#uSave').onclick=()=>{
  const rec={};Object.entries(uf).forEach(([i,k])=>rec[k]=$('#'+i).value.trim());
  if(!rec.name)return toast('Enter the customer name');
@@ -562,6 +652,22 @@ document.addEventListener('keydown',e=>{
  else if(e.key==='Escape')hideSug()},true);
 document.addEventListener('focusout',()=>setTimeout(()=>{const a=document.activeElement;if(!a||!a.matches||!a.matches('[data-f="desc"],[data-k="cust"]'))hideSug()},150));
 
+/* ===== activity log (admin watches what other users do) + Ctrl+S ===== */
+function logAct(text){const c=cloud();if(!c)return;const id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);c.set('activity',id,{id,at:Date.now(),by:c.user.email||'',role:window.ROLE,text}).catch(()=>{})}
+const seenAct=new Set();let actFirst=true;
+function renderAct(docs){
+ const L=[...docs].sort((a,b)=>b.at-a.at),me=(window.FB&&window.FB.user&&window.FB.user.email)||'';
+ if(!actFirst)L.forEach(a=>{if(!seenAct.has(a.id)&&a.by!==me)toast((a.by||'').split('@')[0]+' '+a.text)});
+ L.forEach(a=>seenAct.add(a.id));actFirst=false;
+ $('#actList').innerHTML=L.length?L.map(a=>`<div class="item"><b>${esc((a.by||'').split('@')[0])}</b> <span class="muted">· ${esc(a.role||'')} · ${esc(new Date(a.at).toLocaleString('en-GB'))}</span><div class="small" style="margin-top:3px">${esc(a.text)}</div></div>`).join(''):'<div class="empty">No activity yet.</div>'}
+document.addEventListener('keydown',e=>{
+ if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='s'){
+  e.preventDefault();if(!$('#gate').classList.contains('off'))return;
+  const a=document.activeElement;if(a&&a.blur)a.blur();
+  saveInvoice()}});
+
+$('#tplTop').innerHTML=$('#tpl').innerHTML;$('#tplTop').onchange=e=>{$('#tpl').value=e.target.value;change()};
+if(!d.curT||!T[d.curT])d.curT=curT();else if(d.curT!==curT()){stashDraft(d.curT);d.curT=curT();loadDraft(d.curT)}
 buildForm();renderCat();syncControls();buildItems();paper();render();
 renderCusts();renderInvs();
 </script>
@@ -569,7 +675,7 @@ renderCusts();renderInvs();
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAnalytics,isSupported} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,setDoc,getDoc,deleteDoc,collection,onSnapshot,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,setDoc,getDoc,deleteDoc,collection,onSnapshot,runTransaction,query,orderBy,limit} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyAIUo5muvGhbpHcsVfhkfyalhlk85zrE60",authDomain:"invc-8b21a.firebaseapp.com",projectId:"invc-8b21a",storageBucket:"invc-8b21a.firebasestorage.app",messagingSenderId:"1045884988410",appId:"1:1045884988410:web:46a2fcf547826e68b4d243",measurementId:"G-M8EXPH0DY0"};
 const app=initializeApp(firebaseConfig);
 isSupported().then(ok=>{if(ok)getAnalytics(app)}).catch(()=>{});
@@ -582,12 +688,15 @@ const FB=window.FB={user:null,
  /* atomic shared counter: two users can never receive the same number */
  nextNo:async()=>{const ref=doc(db,'meta','invoiceCounter');
   const n=await runTransaction(db,async tx=>{const s=await tx.get(ref);const v=(s.exists()?s.data().last:0)+1;tx.set(ref,{last:v});return v});
-  return 'INV-'+new Date().getFullYear()+'-'+String(n).padStart(6,'0')}};
+  return 'INV-'+new Date().getFullYear()+'-'+String(n).padStart(6,'0')},
+ nextCode:async()=>{const ref=doc(db,'meta','itemCounter');return runTransaction(db,async tx=>{const s=await tx.get(ref);const v=(s.exists()?s.data().last:0)+1;tx.set(ref,{last:v});return v})}};
 let unsubs=[];
 onAuthStateChanged(auth,async u=>{
  FB.user=u;FB.role=null;unsubs.forEach(f=>f());unsubs=[];
  if(u){try{const s=await getDoc(doc(db,'staff',(u.email||'').toLowerCase()));const r=s.exists()?s.data().role:null;FB.role=['admin','sales'].includes(r)?r:null}catch(e){FB.role=null}}
  if(u&&FB.role)['invoice_catalog','invoice_customers','invoices'].forEach(col=>unsubs.push(onSnapshot(collection(db,col),s=>window.onCloud&&window.onCloud(col,s.docs.map(x=>x.data())),err=>window.toast&&window.toast('Cloud read failed ('+col+'): '+err.message))));
+ if(u&&FB.role)unsubs.push(onSnapshot(doc(db,'meta','settings'),s=>window.onCloud&&window.onCloud('settings',s.exists()?[s.data()]:[]),()=>{}));
+ if(u&&FB.role==='admin')unsubs.push(onSnapshot(query(collection(db,'activity'),orderBy('at','desc'),limit(50)),s=>window.onCloud&&window.onCloud('activity',s.docs.map(x=>x.data())),()=>{}));
  window.onAuthChange&&window.onAuthChange(u,FB.role)});
 </script>
 </body>

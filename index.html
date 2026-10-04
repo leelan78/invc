@@ -87,6 +87,9 @@ tr:hover .del,.r4:hover .del{display:flex}
 .sg{padding:7px 10px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #f0f2f6;color:#172033;font-family:Inter,"Segoe UI",Arial,sans-serif}.sg.hi,.sg:hover{background:#e8f0fe}.sg small{color:#667085;white-space:nowrap}
 .ed:empty:before{content:attr(data-ph);color:#98a2b3}.ed[data-k]{white-space:pre-line;display:inline-block;min-width:34px}
 @media print{.ed:empty:before{content:''}}
+body[data-role="sales"] .adm{display:none!important}.ed[contenteditable="false"]:hover{background:none}
+#gate{position:fixed;inset:0;z-index:100;background:#101828;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}#gate.off{display:none}#gate .bx{max-width:360px}#gate h2{margin:0 0 10px}#gate p{color:#cbd5e1;font-size:14px;line-height:1.55;margin:0 0 16px}
+@media print{#gate{display:none!important}}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.shead,.tabs{position:static}}
 @media print{body{background:#fff}.sidebar,.np,#toast,#reopen{display:none!important}.layout{display:block}.preview{padding:0;overflow:visible}.paper{zoom:1!important;box-shadow:none;margin:0;min-height:calc(var(--h) - 2mm)}.invoice{min-height:calc(var(--h) - 2mm)}}
 </style>
@@ -98,7 +101,7 @@ tr:hover .del,.r4:hover .del{display:flex}
  <nav class="tabs">
   <button class="nb on" data-tab="design">Design &amp; output</button>
   <button class="nb" data-tab="details">Details</button>
-  <button class="nb" data-tab="inventory">Inventory</button>
+  <button class="nb adm" data-tab="inventory">Inventory</button>
   <button class="nb" data-tab="lines">Invoice items</button>
   <button class="nb" data-tab="customers">Customers</button>
   <button class="nb" data-tab="invoices">Saved invoices</button>
@@ -117,6 +120,7 @@ tr:hover .del,.r4:hover .del{display:flex}
   <select id="paper"><option value="A4">A4</option><option value="Letter">US Letter</option></select>
   <div class="row" style="margin-top:8px"><button class="btn" onclick="window.print()">Print</button><button class="btn alt" onclick="window.print()" title="Choose Save as PDF as the destination">Save PDF</button></div>
 
+  <div class="adm">
   <h3>Payment</h3>
   <label>Payment method</label>
   <select id="method"><option value="bank">Bank transfer</option><option value="cash">Cash</option><option value="momo">Mobile money</option><option value="cheque">Cheque</option></select>
@@ -126,6 +130,7 @@ tr:hover .del,.r4:hover .del{display:flex}
   <label>Terms</label><textarea id="tnTerms"></textarea>
   <label>Notes</label><textarea id="tnNotes"></textarea>
   <button class="btn alt" style="margin-top:14px" onclick="resetDemo()">Reset invoice data</button>
+  </div>
  </section>
 
  <!-- DETAILS -->
@@ -183,6 +188,7 @@ tr:hover .del,.r4:hover .del{display:flex}
 </div>
 <button id="reopen" class="np" hidden>☰ Menu</button>
 <div id="toast" class="np"></div>
+<div id="gate"><div class="bx"><h2>Sales Invoice System</h2><p id="gateMsg">Sign in with your authorised Google account to continue.</p><button class="btn" id="gateBtn">Sign in with Google</button></div></div>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -270,7 +276,9 @@ function addFromCat(id){
 
 /* ---------- sidebar forms ---------- */
 function buildForm(){
- $('#form').innerHTML=fields.map(f=>{
+ let inCo=false;$('#form').innerHTML=fields.map(f=>{
+  if(f.length==1)inCo=f[0]=='Your company';
+  if(inCo&&window.ROLE==='sales')return '';
   if(f.length==1)return `<h3 ${f[0]=='Your company'?'style="margin-top:0"':''}>${f[0]}</h3>`;
   const[k,l,t]=f;
   if(t=='ta')return `<label>${l}</label><textarea data-k="${k}">${d[k]??''}</textarea>`;
@@ -278,7 +286,7 @@ function buildForm(){
   return `<label>${l}</label><input data-k="${k}" ${k=='inv'?'readonly':''} type="${t=='n'?'number':t=='date'?'date':'text'}" value="${flat(d[k])}">`;
  }).join('');
  document.querySelectorAll('#form [data-k]').forEach(e=>e.oninput=()=>{d[e.dataset.k]=e.type=='number'?+e.value||0:e.value;render()});
- $('#logoIn').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{d.logo=r.result;render()};r.readAsDataURL(f)};
+ const li=$('#logoIn');if(li)li.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{d.logo=r.result;render()};r.readAsDataURL(f)};
 }
 const lineTot=i=>(i.qty*i.price)*(1-i.disc/100)*(1-(Math.min(100,Math.max(0,+d.discp||0)))/100)*(1+i.tax/100);
 function buildItems(){
@@ -286,7 +294,7 @@ function buildItems(){
  $('#items').innerHTML=L.length?L.map((it,i)=>i===openLine?
  `<div class="item on"><input data-i="${i}" data-f="desc" autocomplete="off" placeholder="Type item name to search inventory" value="${flat(it.desc)}">
  <div class="row"><input data-i="${i}" data-f="code" placeholder="Code" value="${flat(it.code)}"><input data-i="${i}" data-f="unit" placeholder="Unit" value="${flat(it.unit)}"><input data-i="${i}" data-f="qty" type="number" placeholder="Qty" value="${it.qty}"></div>
- <div class="row"><input data-i="${i}" data-f="price" type="number" placeholder="Price" value="${it.price}"><input data-i="${i}" data-f="disc" type="number" placeholder="Disc %" value="${it.disc}"><input data-i="${i}" data-f="tax" type="number" placeholder="Tax %" value="${it.tax}"></div>
+ <div class="row"><input data-i="${i}" data-f="price" type="number" placeholder="Price" ${window.ROLE==='sales'?'readonly':''} value="${it.price}"><input data-i="${i}" data-f="disc" type="number" placeholder="Disc %" value="${it.disc}"><input data-i="${i}" data-f="tax" type="number" placeholder="Tax %" value="${it.tax}"></div>
  <div class="row" style="margin-top:6px"><button class="btn sm" data-done="1">Done</button><button class="btn red sm" data-rm="${i}">Remove</button></div></div>`
  :`<div class="item"><div class="lrow"><div class="t"><b title="${flat(it.desc)}">${esc(it.desc)||'(no description)'}</b><span class="muted">${it.qty} × ${m(it.price)} = ${esc(d.cur)} ${m(lineTot(it))}</span></div><div class="bt"><button class="btn alt sm" data-edit="${i}">Edit</button><button class="btn red sm" data-rm="${i}">Remove</button></div></div></div>`).join('')
  :'<div class="empty">No items on this template yet. Add a blank line, then type an item name to pick it from the inventory.</div>';
@@ -328,7 +336,7 @@ function calc(){
 const fd=s=>{const x=new Date(s+'T00:00:00');return isNaN(x)?esc(s):x.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})};
 
 /* ---------- shared invoice pieces ---------- */
-const ed=(i,f,v)=>`<span class="ed" contenteditable="true" spellcheck="false" data-i="${i}" data-f="${f}" data-ph="${f=='desc'?'Type item name…':''}">${esc(v)}</span>`;
+const ed=(i,f,v)=>`<span class="ed" contenteditable="${f=='price'&&window.ROLE==='sales'?'false':'true'}" spellcheck="false" data-i="${i}" data-f="${f}" data-ph="${f=='desc'?'Type item name…':''}">${esc(v)}</span>`;
 const esr=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const edk=(k,ph)=>`<span class="ed" contenteditable="true" spellcheck="false" data-k="${k}" data-ph="${ph}">${esr(d[k])}</span>`;
 const del=i=>`<span class="np del" data-del="${i}" title="Remove item">×</span>`;
@@ -417,16 +425,25 @@ const ldArr=k=>{try{const s=JSON.parse(localStorage.getItem(k));if(Array.isArray
 let custs=ldArr('invoiceCustomers'),invs=ldArr('invoiceList'),uEdit=null;
 const saveCusts=()=>{try{localStorage.setItem('invoiceCustomers',JSON.stringify(custs))}catch(e){}};
 const saveInvs=()=>{try{localStorage.setItem('invoiceList',JSON.stringify(invs))}catch(e){}};
-function cloud(){return window.FB&&window.FB.user?window.FB:null}
+function cloud(){return window.FB&&window.FB.user&&window.FB.role?window.FB:null}
 function cset(col,rec){const c=cloud();if(c)c.set(col,rec.id,rec).catch(e=>toast('Cloud save failed: '+e.message))}
 function cdel(col,id){const c=cloud();if(c)c.del(col,id).catch(e=>toast('Cloud delete failed: '+e.message))}
 const seeded={};
 window.onCloud=(col,docs)=>{
  const M={invoice_catalog:[()=>cat,v=>{cat=v;saveCat();renderCat();render()}],invoice_customers:[()=>custs,v=>{custs=v;saveCusts();renderCusts()}],invoices:[()=>invs,v=>{invs=v;saveInvs();renderInvs();runSearch()}]};
  const[g,s]=M[col];
- if(!docs.length&&g().length&&!seeded[col]){seeded[col]=1;g().forEach(r=>cset(col,r));return}
+ if(!docs.length&&g().length&&!seeded[col]&&window.ROLE==='admin'){seeded[col]=1;g().forEach(r=>cset(col,r));return}
  s(docs)};
-window.onAuthChange=u=>{$('#authBtn').textContent=u?'Sign out ('+((u.displayName||u.email||'').split(' ')[0])+')':'Sign in with Google';if(u)toast('Signed in — syncing with the cloud')};
+window.ROLE=null;
+window.onAuthChange=(u,role)=>{
+ window.ROLE=role||null;document.body.dataset.role=role||'';
+ $('#authBtn').textContent=u?'Sign out ('+((u.displayName||u.email||'').split(' ')[0])+')':'Sign in with Google';
+ const g=$('#gate'),msg=$('#gateMsg'),b=$('#gateBtn');
+ if(u&&role){g.classList.add('off');buildForm();buildItems();render();if(!d.invAuto)assignNo();toast('Signed in as '+(role==='admin'?'administrator':'sales point'))}
+ else{g.classList.remove('off');
+  if(u){msg.textContent=(u.email||'This account')+' has not been given access. Please contact the administrator.';b.textContent='Sign out'}
+  else{msg.textContent='Sign in with your authorised Google account to continue.';b.textContent='Sign in with Google'}}};
+$('#gateBtn').onclick=()=>$('#authBtn').click();
 $('#authBtn').onclick=()=>{
  if(!window.FB)return toast('Firebase did not load. Open this page over http(s) with internet access.');
  if(window.FB.user)window.FB.signOut();else window.FB.signIn().catch(e=>toast('Sign-in failed: '+e.message))};
@@ -450,7 +467,7 @@ $('#newInv').onclick=newInvoice;
 async function saveInvoice(){
  if(!d.inv)await assignNo();
  const{logo,...rest}=d;
- const rec={id:d.inv,inv:d.inv,date:d.date,cust:d.cust||'',total:calc().grand,tpl:curT(),data:JSON.stringify(rest),saved:Date.now()};
+ const rec={id:d.inv,inv:d.inv,by:(window.FB&&window.FB.user&&window.FB.user.email)||'',date:d.date,cust:d.cust||'',total:calc().grand,tpl:curT(),data:JSON.stringify(rest),saved:Date.now()};
  invs=invs.filter(x=>x.id!==rec.id);invs.push(rec);saveInvs();renderInvs();autoSaveCustomer();
  const c=cloud();
  if(c){try{await c.set('invoices',rec.id,rec);toast('Invoice '+rec.inv+' saved to the cloud')}catch(e){toast('Saved on this device only: '+e.message)}}
@@ -471,7 +488,7 @@ $('#qDate').onchange=runSearch;$('#qText').oninput=runSearch;
 $('#qClr').onclick=()=>{$('#qDate').value='';$('#qText').value='';runSearch()};
 function renderInvs(){
  const all=[...invs].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||b.inv.localeCompare(a.inv));$('#iCount').textContent=all.length;
- $('#invList').innerHTML=all.length?all.map(x=>`<div class="item"><div class="lrow"><div class="t"><b>${esc(x.inv)} · ${esc(x.cust||'(no customer)')}</b><span class="muted">${fd(x.date)} · ${esc(d.cur)} ${m(x.total)}</span></div></div><div class="row" style="margin-top:6px"><button class="btn sm" data-open="${esc(x.id)}">Open</button><button class="btn red sm" data-idel="${esc(x.id)}">Delete</button></div></div>`).join(''):'<div class="empty">No saved invoices yet. Press “Save invoice” in the top bar.</div>'}
+ $('#invList').innerHTML=all.length?all.map(x=>`<div class="item"><div class="lrow"><div class="t"><b>${esc(x.inv)} · ${esc(x.cust||'(no customer)')}</b><span class="muted">${fd(x.date)} · ${esc(d.cur)} ${m(x.total)}</span></div></div><div class="row" style="margin-top:6px"><button class="btn sm" data-open="${esc(x.id)}">Open</button><button class="btn red sm adm" data-idel="${esc(x.id)}">Delete</button></div></div>`).join(''):'<div class="empty">No saved invoices yet. Press “Save invoice” in the top bar.</div>'}
 document.addEventListener('click',e=>{
  const o=e.target.closest('[data-open]'),x=e.target.closest('[data-idel]');
  if(o)loadInvoice(o.dataset.open);
@@ -484,7 +501,7 @@ function clearU(){uEdit=null;Object.keys(uf).forEach(i=>$('#'+i).value='');$('#u
 function renderCusts(){
  const q=key($('#uSearch').value),list=[...custs].sort((a,b)=>a.name.localeCompare(b.name)).filter(c=>!q||key(c.name).includes(q)||key(c.phone).includes(q));
  $('#uCount').textContent=custs.length;
- $('#custList').innerHTML=list.length?list.map(c=>`<div class="item ${c.id===uEdit?'on':''}"><div class="lrow"><div class="t"><b>${esc(c.name)}</b><span class="muted">${esc(c.phone||'no phone')} · ${flat(c.addr||'')}</span></div></div><div class="row" style="margin-top:6px"><button class="btn sm" data-uuse="${c.id}">Use on invoice</button><button class="btn alt sm" data-uedit="${c.id}">Edit</button><button class="btn red sm" data-udel="${c.id}">Delete</button></div></div>`).join(''):`<div class="empty">${custs.length?'No customers match your search.':'No customers saved yet. Add one above.'}</div>`}
+ $('#custList').innerHTML=list.length?list.map(c=>`<div class="item ${c.id===uEdit?'on':''}"><div class="lrow"><div class="t"><b>${esc(c.name)}</b><span class="muted">${esc(c.phone||'no phone')} · ${flat(c.addr||'')}</span></div></div><div class="row" style="margin-top:6px"><button class="btn sm" data-uuse="${c.id}">Use on invoice</button><button class="btn alt sm" data-uedit="${c.id}">Edit</button><button class="btn red sm adm" data-udel="${c.id}">Delete</button></div></div>`).join(''):`<div class="empty">${custs.length?'No customers match your search.':'No customers saved yet. Add one above.'}</div>`}
 function applyCust(c){Object.assign(d,{cust:c.name,ccontact:c.contact||'',caddr:c.addr||'',cphone:c.phone||'',cemail:c.email||'',ctax:c.tax||'',shipTo:c.ship||c.addr||''});buildForm();render();toast('Customer details filled in')}
 function autoSaveCustomer(){
  const name=(d.cust||'').trim();if(!name)return;
@@ -546,13 +563,13 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('focusout',()=>setTimeout(()=>{const a=document.activeElement;if(!a||!a.matches||!a.matches('[data-f="desc"],[data-k="cust"]'))hideSug()},150));
 
 buildForm();renderCat();syncControls();buildItems();paper();render();
-renderCusts();renderInvs();if(!d.invAuto)assignNo();
+renderCusts();renderInvs();
 </script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAnalytics,isSupported} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,setDoc,deleteDoc,collection,onSnapshot,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,setDoc,getDoc,deleteDoc,collection,onSnapshot,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyAIUo5muvGhbpHcsVfhkfyalhlk85zrE60",authDomain:"invc-8b21a.firebaseapp.com",projectId:"invc-8b21a",storageBucket:"invc-8b21a.firebasestorage.app",messagingSenderId:"1045884988410",appId:"1:1045884988410:web:46a2fcf547826e68b4d243",measurementId:"G-M8EXPH0DY0"};
 const app=initializeApp(firebaseConfig);
 isSupported().then(ok=>{if(ok)getAnalytics(app)}).catch(()=>{});
@@ -567,10 +584,11 @@ const FB=window.FB={user:null,
   const n=await runTransaction(db,async tx=>{const s=await tx.get(ref);const v=(s.exists()?s.data().last:0)+1;tx.set(ref,{last:v});return v});
   return 'INV-'+new Date().getFullYear()+'-'+String(n).padStart(6,'0')}};
 let unsubs=[];
-onAuthStateChanged(auth,u=>{
- FB.user=u;unsubs.forEach(f=>f());unsubs=[];
- if(u)['invoice_catalog','invoice_customers','invoices'].forEach(col=>unsubs.push(onSnapshot(collection(db,col),s=>window.onCloud&&window.onCloud(col,s.docs.map(x=>x.data())),err=>window.toast&&window.toast('Cloud read failed ('+col+'): '+err.message))));
- window.onAuthChange&&window.onAuthChange(u)});
+onAuthStateChanged(auth,async u=>{
+ FB.user=u;FB.role=null;unsubs.forEach(f=>f());unsubs=[];
+ if(u){try{const s=await getDoc(doc(db,'staff',(u.email||'').toLowerCase()));const r=s.exists()?s.data().role:null;FB.role=['admin','sales'].includes(r)?r:null}catch(e){FB.role=null}}
+ if(u&&FB.role)['invoice_catalog','invoice_customers','invoices'].forEach(col=>unsubs.push(onSnapshot(collection(db,col),s=>window.onCloud&&window.onCloud(col,s.docs.map(x=>x.data())),err=>window.toast&&window.toast('Cloud read failed ('+col+'): '+err.message))));
+ window.onAuthChange&&window.onAuthChange(u,FB.role)});
 </script>
 </body>
 </html>
